@@ -39,7 +39,7 @@ output_format = "csv"
 - **output_format**: `Defined the output format of the data, (currently a placeholder for future)`
 
 ### Running
-`python3 vuln_detector.py --profile {insert profile}`
+`python vuln_detector.py --profile {insert profile}`
 
 ### Output
 Dummy csv:
