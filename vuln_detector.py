@@ -43,8 +43,12 @@ def get_elb_public_ips(session):
     elb_v1 = session.client('elb')
     elb_v2 = session.client('elbv2')
 
-    lbs_v1 = elb_v1.describe_load_balancers()
-    lbs_v2 = elb_v2.describe_load_balancers()
+    try:
+        lbs_v1 = elb_v1.describe_load_balancers()
+        lbs_v2 = elb_v2.describe_load_balancers()
+    except Exception:
+        print("No Load Balancers found")
+        raise Exception
 
     for lbs in lbs_v1['LoadBalancerDescriptions']:
         if not re.match(r'^internal', lbs['DNSName']):
@@ -193,12 +197,18 @@ def main():
         except Exception as e:
             print(f"Unable to check EC2 instances, Error: \n {e})")
 
-        print("Checking RDS for exposed IPs / Ports....")
-        exposed_services += get_rds_public_ips(session)
+        try:
+            print("Checking RDS for exposed IPs / Ports....")
+            exposed_services += get_rds_public_ips(session)
+        except Exception as e:
+            print(f"Unable to check RDS databases, Error: \n {e})")
 
-        print("Checking Load Balancers for exposed IPs / Ports.... \n")
-        exposed_services += get_elb_public_ips(session)
-    
+        try:
+            print("Checking Load Balancers for exposed IPs / Ports.... \n")
+            exposed_services += get_elb_public_ips(session)
+        except Exception as e:
+            print(f"Unable to check load balancers, Error: \n {e})")
+
     print("---------------------------------------------\n Generating CSV File for Review..")
     header_row = ['Resource Name', 'Service Identifier', 'Public DNS/IP', 'Ports Exposed', 'Security Group']
     build_csv(exposed_services, header_row)
