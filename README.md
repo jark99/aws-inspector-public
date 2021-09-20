@@ -57,6 +57,7 @@ If `--profile` is not passed during Run then `default-profile` will be used in `
 
 ### Known Issues
 1. DockerFile is a placeholder, ran into some minor issues developing on Windows host
+2. CSV Writer requires a path, currently associated to Windows Hosts. Change to use OS libs for dynamic paths
 
 ### Future iterations
 1. Automate further with Docker integration
